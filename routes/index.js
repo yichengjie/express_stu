@@ -1,9 +1,17 @@
-var express = require('express');
-var router = express.Router();
+var users = require('./users') ;
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
 
-module.exports = router;
+module.exports = function (app) {
+  /* GET home page. */
+  app.get('/', function(req, res, next) {
+    res.render('index', { title: 'Express' });
+  });
+
+  app.get('/nswbmw', function(req, res, next) {
+    res.send('hello world !') ;
+  });
+
+  //加载users模块的路由
+  app.use('/users',users) ;
+}
+

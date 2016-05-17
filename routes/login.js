@@ -6,7 +6,7 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res) {
-    res.render('login',{title:'µÇÂ¼'}) ;
+    res.render('login',{title:'ç™»å½•'}) ;
 });
 
 router.post('/', function(req, res) {

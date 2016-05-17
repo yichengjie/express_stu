@@ -8,17 +8,25 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-
 var routes = require('./routes/index') ;
+var settings = require('./settings') ;
+var flash = require('connect-flash') ;
+
+
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+
 
 var app = express();
 
-//生成环境
+//涓婄嚎閰嶇疆
 //app.set('env', 'production');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.use(flash()) ;
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -30,6 +38,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //app.use('/', routes);
 //app.use('/users', users);
+
+/*app.use(session({
+  secret:settings.cookieSecret,
+  key:settings.db,//cookie name
+  cookie:{maxAge:1000 * 60 * 60 * 24 * 30},//30 day
+  store:new MongoStore({
+    db:settings.db,
+    host:settings.host,
+    port:settings.port
+  })
+})) ;*/
+
+app.use(session({
+  secret:settings.cookieSecret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true },
+  store: new MongoStore({ url: 'mongodb://localhost/blog' })
+}));
+
 
 routes(app) ;
 

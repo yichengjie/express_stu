@@ -5,9 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
 var routes = require('./routes/index') ;
 var settings = require('./settings') ;
 var flash = require('connect-flash') ;
@@ -36,19 +33,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//app.use('/', routes);
-//app.use('/users', users);
-
-/*app.use(session({
-  secret:settings.cookieSecret,
-  key:settings.db,//cookie name
-  cookie:{maxAge:1000 * 60 * 60 * 24 * 30},//30 day
-  store:new MongoStore({
-    db:settings.db,
-    host:settings.host,
-    port:settings.port
-  })
-})) ;*/
 
 app.use(session({
   secret:settings.cookieSecret,

@@ -4,6 +4,26 @@ var post = require('./post') ;
 var User = require('../models/user') ;
 var crypto = require('crypto') ;
 
+var LoginFilter = require('../common/LoginFilter') ;
+
+
+function checkLogin(req,res,next){
+  if(!req.session.user){
+    req.flash('error','未登录') ;
+    res.redirect('/login') ;
+  }
+  next() ;
+}
+
+function checkNotLogin(req,res,next){
+  if(req.session.user){
+    req.flash('error','已登录!') ;
+    res.redirect('back') ;
+  }
+  next() ;
+}
+
+
 
 module.exports = function (app) {
   /* GET home page. */
@@ -16,7 +36,7 @@ module.exports = function (app) {
 
   });
 
-
+  app.get('/login',checkNotLogin) ;
   app.get('/login', function(req, res) {
     res.render('login',{title:'登录',
       user:req.session.user,
@@ -25,6 +45,7 @@ module.exports = function (app) {
     }) ;
   });
 
+  app.get('/login',checkNotLogin) ;
   app.post('/login', function(req, res) {
     var md5 = crypto.createHash('md5') ;
     var password = md5.update(req.body.password).digest('hex') ;
@@ -43,6 +64,7 @@ module.exports = function (app) {
     }) ;
   });
 
+  app.get('/login',checkLogin) ;
   app.get('/logout', function (req, res) {
     req.session.user = null ;
     req.flash('success','登出成功') ;

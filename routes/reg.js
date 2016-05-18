@@ -5,8 +5,10 @@ var express = require('express');
 var router = express.Router();
 var crypto = require('crypto') ;
 var User = require('../models/user') ;
+var LoginFilter = require('../common/LoginFilter') ;
 
 /* GET users listing. */
+router.get('/',LoginFilter.checkNotLogin) ;
 router.get('/', function(req, res) {
     res.render('reg',{title:'注册',
         user:req.session.user,
@@ -14,7 +16,7 @@ router.get('/', function(req, res) {
         error:req.flash('error').toString()
     }) ;
 });
-
+router.get('/',LoginFilter.checkNotLogin) ;
 router.post('/', function(req, res) {
     var name = req.body.name ;
     var password = req.body.password ;

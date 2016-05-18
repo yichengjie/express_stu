@@ -11,8 +11,15 @@
       <h1><%= title%></h1>
   </header>
   <nav>
-      <span><a href="/" title ="主页">主页</a></span>
-      <span><a href="/login" title ="登录">登录</a></span>
-      <span><a href="/reg" title ="注册">注册</a></span>
+      <span><a href="/" title ="主页">home</a></span>
+      <%if(user){%>
+            <span><a href="/post" title="发表">post</a></span>
+            <span><a href="/logout" title="登出">logou</a></span>
+      <%}else{%>
+          <span><a href="/login" title ="登录">login</a></span>
+          <span><a href="/reg" title ="注册">regist</a></span>
+      <%}%>
   </nav>
     <article>
+        <div><%=success%></div>
+        <div><%=error%></div>

@@ -8,7 +8,11 @@ var User = require('../models/user') ;
 
 /* GET users listing. */
 router.get('/', function(req, res) {
-    res.render('reg',{title:'注册'}) ;
+    res.render('reg',{title:'注册',
+        user:req.session.user,
+        success:req.flash('success').toString(),
+        error:req.flash('error').toString()
+    }) ;
 });
 
 router.post('/', function(req, res) {
@@ -23,9 +27,8 @@ router.post('/', function(req, res) {
         return res.redirect('/reg') ;
     }
 
-
-    //var md5 = crypto.createHash('md5') ;
-    //password= md5.update(req,password).digest('hex') ;
+    var md5 = crypto.createHash('md5') ;
+    password= md5.update(password).digest('hex') ;
     var newUser = new User({
         name:name,
         password:password,

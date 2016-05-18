@@ -14,6 +14,9 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
 
+var crypto = require('crypto') ;
+
+
 var app = express();
 
 //上线配置
@@ -36,10 +39,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
   secret:settings.cookieSecret,
+  key:settings.cookieSecret,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true },
-  store: new MongoStore({ url: 'mongodb://localhost/blog' })
+  cookie: {maxAge:1000*60*60*24*30},
+  store: new MongoStore({
+    url: 'mongodb://localhost/blog'
+   /* db:settings.db,
+    host:settings.host,
+    port:settings.port*/
+  })
 }));
 
 
@@ -79,6 +88,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;

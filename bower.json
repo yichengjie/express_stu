@@ -1,0 +1,17 @@
+{
+  "name": "express_stu",
+  "description": "",
+  "main": "",
+  "authors": [
+    "yichengjie <626659321@qq.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "express"
+  ],
+  "homepage": "https://github.com/yichengjie/express_stu",
+  "moduleType": [],
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}

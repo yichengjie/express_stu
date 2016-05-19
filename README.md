@@ -6,3 +6,7 @@ install dependencies:
 
 run the app:
 > SET DEBUG=express_stu:* & npm start
+
+
+start mongodb
+> mongod --dbpath E:\install\MongoDB\dbdata\blog

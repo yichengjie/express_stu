@@ -7,11 +7,12 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index') ;
 var settings = require('./settings') ;
+//表单信息回填中间件
 var flash = require('connect-flash') ;
 
 
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 
 
 var crypto = require('crypto') ;
@@ -47,6 +48,7 @@ app.use(session({
     url: 'mongodb://localhost/blog'
   })
 }));
+
 
 
 routes(app) ;

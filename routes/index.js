@@ -6,6 +6,10 @@ var PostModel = require('../models/post') ;
 var crypto = require('crypto') ;
 var LoginFilter = require('../common/LoginFilter') ;
 
+//文件上传中间件
+var multer = require('multer') ;
+var upload = multer({ dest: '../public/uploads/' }) ;
+
 
 module.exports = function (app) {
 
@@ -52,11 +56,34 @@ module.exports = function (app) {
     }) ;
   });
 
-  app.get('/login',LoginFilter.checkLogin) ;
+  app.get('/logout',LoginFilter.checkLogin) ;
   app.get('/logout', function (req, res) {
     req.session.user = null ;
     req.flash('success','登出成功') ;
     res.redirect('/') ;
+  }) ;
+
+  app.get('/upload',LoginFilter.checkLogin) ;
+  app.get('/upload',function(req,res){
+    res.render('upload',{
+      title:'文件上传',
+      user:req.session.user,
+      success:req.flash('success').toString(),
+      error:req.flash('error').toString()
+    }) ;
+  }) ;
+
+
+  /**
+   * app.post('/photos/upload', upload.array('photos', 12), function (req, res, next) {
+  // req.files is array of `photos` files
+  // req.body will contain the text fields, if there were any
+   */
+
+  app.post('/upload',LoginFilter.checkLogin) ;
+  app.post('/upload',upload.array('file', 5) ,function (req,res) {
+    req.flash('success','文件上传成功') ;
+    res.redirect('/upload') ;
   }) ;
 
 

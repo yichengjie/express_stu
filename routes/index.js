@@ -5,11 +5,23 @@ var UserModel = require('../models/user') ;
 var PostModel = require('../models/post') ;
 var crypto = require('crypto') ;
 var LoginFilter = require('../common/LoginFilter') ;
+var path = require('path') ;
 
 //文件上传中间件
 var multer = require('multer') ;
-var upload = multer({ dest: '../public/uploads/' }) ;
+//var upload = multer({ dest: './public/uploads/' }) ;
+var fs =require('fs') ;
 
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+var upload = multer({ storage: storage }) ;
 
 module.exports = function (app) {
 
@@ -82,6 +94,23 @@ module.exports = function (app) {
 
   app.post('/upload',LoginFilter.checkLogin) ;
   app.post('/upload',upload.array('file', 5) ,function (req,res) {
+    var files = req.files ;
+    console.info('--------------------------') ;
+    files.forEach(function (item) {
+        console.info(item) ;
+        var uploadedPath = item.path;
+        var dstPath = path.join(item.destination,item.originalname)  ;
+        console.info('dstPath : '+ dstPath) ;
+        fs.rename(uploadedPath, dstPath, function(err) {
+          if (err){
+            console.log("重命名文件错误："+ err);
+          } else {
+            console.log("重命名文件成功。");
+          }
+        });
+    }) ;
+    console.info('--------------------------') ;
+
     req.flash('success','文件上传成功') ;
     res.redirect('/upload') ;
   }) ;

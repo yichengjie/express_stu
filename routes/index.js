@@ -117,7 +117,7 @@ module.exports = function (app) {
 
 
 
-  //
+  app.get('/u/:name',LoginFilter.checkLogin) ;
   app.get('/u/:name', function (req, res) {
     UserModel.get(req.params.name, function (err,user) {
       if(!user){
@@ -140,7 +140,7 @@ module.exports = function (app) {
     })
   }) ;
 
-
+  app.get('/u/:name/:day/:title',LoginFilter.checkLogin) ;
   app.get('/u/:name/:day/:title', function (req, res) {
 
       PostModel.getOne(req.params.name,req.params.day,req.params.title, function (err, post) {
@@ -157,6 +157,67 @@ module.exports = function (app) {
           }) ;
 
       })
+  }) ;
+
+
+
+  app.get('/edit/:name/:day/:title',LoginFilter.checkLogin) ;
+  app.get('/edit/:name/:day/:title', function (req, res) {
+      var currentUser = req.session.user ;
+      var name = currentUser.name ;
+      var day = req.params.day ;
+      var title = req.params.title ;
+      PostModel.edit(name,day,title, function (err, post) {
+        if(err){
+          req.flash('error',err) ;
+          return res.redirect('back') ;
+        }
+        res.render('edit',{
+          title:'编辑',
+          post:post,
+          user:currentUser,
+          success:req.flash('success').toString() ,
+          error:req.flash('error').toString()
+        }) ;
+
+      }) ;
+
+  }) ;
+
+  //更新post
+  app.post('/edit/:name/:day/:title',LoginFilter.checkLogin) ;
+  app.post('/edit/:name/:day/:title', function (req,res) {
+      var currentUser = req.session.user ;
+      var name = currentUser.name ;
+      var day = req.params.day ;
+      var title = req.params.title ;
+      var post = req.body.post ;
+      PostModel.update(name,day,title,post, function (err) {
+          var url = encodeURI('/u/'+name+'/'+day+'/'+title) ;
+          if(err){
+             req.flash('error',err) ;
+             return res.redirect(url) ;
+          }
+          req.flash('success','修改成功!') ;
+          res.redirect(url) ;
+      })
+  }) ;
+
+  //删除post
+  app.get('/remove/:name/:day/:title',LoginFilter.checkLogin) ;
+  app.get('/remove/:name/:day/:title',function(req,res){
+      var currentUser = req.session.user ;
+      var name = currentUser.name ;
+      var day = req.params.day ;
+      var title = req.params.title ;
+      PostModel.remove(name,day,title, function (err) {
+          if(err){
+            req.flash('error',err) ;
+            return res.redirect('back') ;
+          }
+          req.flash('success','删除成功!') ;
+          res.redirect('/') ;
+      }) ;
 
   }) ;
 

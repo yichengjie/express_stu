@@ -29,7 +29,9 @@ Post.prototype.save = function (callback) {
     var post = {name:this.name,
         time:time,
         title:this.title,
-        post:this.post} ;
+        post:this.post,
+        comments:[]
+    } ;
     //打开数据库
     mongodb.open(function (err,db) {
         if(err){
@@ -92,7 +94,6 @@ Post.getAll = function(name,callback){
 };
 
 Post.getOne = function (name,day,title,callback) {
-    
     mongodb.open(function (err,db) {
         if(err){
             return callback(err) ;
@@ -112,7 +113,13 @@ Post.getOne = function (name,day,title,callback) {
                 if(err){
                     return callback(err) ;
                 }
-                doc.post = markdown.toHTML(doc.post) ;
+                if(doc){
+                    doc.post = markdown.toHTML(doc.post) ;
+                    doc.comments.forEach(function(comment){
+                        comment.content = markdown.toHTML(comment.content) ;
+                    }) ;
+                }
+
                 callback(null,doc) ;
             }) ;
 

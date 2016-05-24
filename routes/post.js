@@ -4,7 +4,8 @@
 var express = require('express');
 var router = express.Router();
 var LoginFilter = require('../common/LoginFilter') ;
-var Post = require('../models/post') ;
+var PostModel = require('../models/post') ;
+var commentModel = require('../models/comment') ;
 
 /* GET users listing. */
 router.get('/',LoginFilter.checkLogin) ;
@@ -21,7 +22,7 @@ router.post('/', function(req, res) {
     var currentUser = req.session.user ;
     var titleStr = req.body.title ;
     var postStr = req.body.post ;
-    var post = new Post(currentUser.name,titleStr,postStr) ;
+    var post = new PostModel(currentUser.name,titleStr,postStr) ;
     post.save(function (err) {
         if(err){
             req.flash('error',err) ;

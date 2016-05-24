@@ -27,7 +27,7 @@ module.exports = function (app) {
 
   /* GET home page. */
   app.get('/', function(req, res) {
-    PostModel.get(null, function (err,posts) {
+    PostModel.getAll(null, function (err,posts) {
       if(err){
         posts = [] ;
       }
@@ -113,6 +113,51 @@ module.exports = function (app) {
 
     req.flash('success','文件上传成功') ;
     res.redirect('/upload') ;
+  }) ;
+
+
+
+  //
+  app.get('/u/:name', function (req, res) {
+    UserModel.get(req.params.name, function (err,user) {
+      if(!user){
+        req.flash('error','用户名不存在!') ;
+        res.redirect('/') ;
+      }
+      PostModel.getAll(user.name, function (err,posts) {
+        if(err){
+          req.flash('error',err) ;
+          return res.redirect('/') ;
+        }
+        res.render('user',{
+          title:user.name,
+          posts:posts,
+          user:req.session.user,
+          success:req.flash('success').toString(),
+          error:req.flash('error').toString()
+        }) ;
+      })
+    })
+  }) ;
+
+
+  app.get('/u/:name/:day/:title', function (req, res) {
+
+      PostModel.getOne(req.params.name,req.params.day,req.params.title, function (err, post) {
+          if(err){
+            req.flash('error',err) ;
+            return res.redirect('/') ;
+          }
+          res.render('article',{
+            title:req.params.title,
+            post:post,
+            user:req.session.user,
+            success:req.flash('success').toString() ,
+            error:req.flash('error').toString()
+          }) ;
+
+      })
+
   }) ;
 
 
